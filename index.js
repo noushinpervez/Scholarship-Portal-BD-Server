@@ -28,14 +28,33 @@ async function run() {
         // await client.connect();
 
         const scholarshipCollection = client.db("scholarshipPortalDB").collection("scholarships");
+        const userCollection = client.db("scholarshipPortalDB").collection("users");
 
         app.get("/top-scholarships", async (req, res) => {
-            // Sort scholarships by post date (newest first) and then by application fees (lowest first)
+            // Sort scholarships by application fees (lowest first) and then by post date (newest first)
             const scholarships = await scholarshipCollection.find()
                 .sort({ application_fees: 1, post_date: -1 })
                 .toArray();
 
             res.send(scholarships);
+        });
+
+        app.get("/top-scholarships/:id", async (req, res) => {
+            const result = await scholarshipCollection.findOne({ _id: new ObjectId(req.params.id) });
+            res.send(result);
+        });
+
+        app.post("/users", async (req, res) => {
+            const user = req.body;
+
+            const query = { email: user.email };
+            const existingUser = await userCollection.findOne(query);
+            if (existingUser) {
+                return res.send({ message: "User already exists", insertedId: null })
+            }
+
+            const result = await userCollection.insertOne(user);
+            res.send(result);
         });
 
         // Send a ping to confirm a successful connection
