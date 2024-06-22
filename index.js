@@ -104,6 +104,18 @@ async function run() {
             res.send(reviews);
         });
 
+        // Fetch reviews by scholarship ID
+        app.get("/reviews/:scholarshipId", async (req, res) => {
+            const scholarshipId = req.params.scholarshipId;
+            const reviews = await reviewCollection.find({ scholarship_id: scholarshipId }).toArray();
+
+            if (!reviews) {
+                return res.status(404).json({ error: "No reviews found for this scholarship ID" });
+            }
+
+            res.json(reviews);
+        });
+
         //  Post user
         app.post("/users", async (req, res) => {
             const user = req.body;
