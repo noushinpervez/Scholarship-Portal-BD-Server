@@ -97,6 +97,13 @@ async function run() {
             res.send(result);
         });
 
+        // Fetch reviews by user email
+        app.get("/reviews/:email", async (req, res) => {
+            const email = req.params.email;
+            const reviews = await reviewCollection.find({ email: email }).toArray();
+            res.send(reviews);
+        });
+
         //  Post user
         app.post("/users", async (req, res) => {
             const user = req.body;
