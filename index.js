@@ -161,6 +161,13 @@ async function run() {
             res.send(result);
         });
 
+        // Fetch applied scholarships by user email
+        app.get("/applied-scholarships/:email", async (req, res) => {
+            const email = req.params.email;
+            const appliedScholarships = await appliedScholarshipCollection.find({ email: email }).toArray();
+            res.send(appliedScholarships);
+        });
+
         // Payment intent
         app.post("/create-payment-intent", async (req, res) => {
             const { fees } = req.body;
