@@ -213,7 +213,7 @@ async function run() {
             res.send(result);
         });
 
-        // Add feedback
+        // Update feedback
         app.post("/applications/:applicationId/feedback", async (req, res) => {
             const { applicationId } = req.params;
             const { feedback } = req.body;
@@ -230,6 +230,23 @@ async function run() {
             const email = req.params.email;
             const appliedScholarships = await appliedScholarshipCollection.find({ email: email }).toArray();
             res.send(appliedScholarships);
+        });
+
+        app.put("/applications/:id", async (req, res) => {
+            const appliedScholarshipId = req.params.id;
+            const updateData = req.body;
+
+            await connectAndRun(async (database) => {
+                const appliedScholarshipCollection = database.collection("appliedScholarships");
+                const filter = { _id: new ObjectId(appliedScholarshipId) };
+                const updateResult = await appliedScholarshipCollection.updateOne(filter, { $set: updateData });
+
+                if (updateResult.modifiedCount === 1) {
+                    res.send("Applied scholarship updated successfully");
+                } else {
+                    res.status(404).send("Applied scholarship not found");
+                }
+            });
         });
 
         // Payment intent
