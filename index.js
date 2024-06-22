@@ -180,6 +180,29 @@ async function run() {
             res.send(result);
         });
 
+        // Fetch applied scholarships
+        app.get("/applications", async (req, res) => {
+            const result = await appliedScholarshipCollection.find().toArray();
+            res.send(result);
+        });
+
+        // Fetch applications by user email
+        app.get("/applications/:email", async (req, res) => {
+            const email = req.params.email;
+            const scholarships = await appliedScholarshipCollection.find({ userEmail: email }).toArray();
+            res.send(scholarships);
+        });
+
+        // Delete applied scholarships
+        app.delete("/applications/:id", async (req, res) => {
+            const id = req.params.id;
+            const result = await appliedScholarshipCollection.deleteOne({ _id: new ObjectId(id) });
+
+            if (result.deletedCount === 1) {
+                res.send(result);
+            }
+        });
+
         // Fetch applied scholarships by user email
         app.get("/applied-scholarships/:email", async (req, res) => {
             const email = req.params.email;
