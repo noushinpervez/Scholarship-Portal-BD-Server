@@ -48,6 +48,32 @@ async function run() {
             res.send(result);
         });
 
+        // Update scholarship
+        app.put("/update-scholarships/:id", async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) };
+            const options = { upsert: true };
+
+            const data = {
+                $set: {
+                    university_name: req.body.university_name,
+                    scholarship_category: req.body.scholarship_category,
+                    university_logo: req.body.university_logo,
+                    application_deadline: req.body.application_deadline,
+                    subject_name: req.body.subject_name,
+                    scholarship_description: req.body.scholarship_description,
+                    stipend: req.body.stipend,
+                    post_date: req.body.post_date,
+                    service_charge: req.body.service_charge,
+                    application_fees: req.body.application_fees,
+                    degree_name: req.body.degree_name,
+                    'university_location.country': req.body.country,
+                }
+            };
+
+            const result = await scholarshipCollection.updateOne(query, data, options);
+            res.send(result);
+        });
+
         // Cancel scholarship
         app.delete("/top-scholarships/:id", async (req, res) => {
             const id = req.params.id;
