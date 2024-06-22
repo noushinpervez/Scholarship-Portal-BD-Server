@@ -203,6 +203,28 @@ async function run() {
             }
         });
 
+        // Update application status
+        app.put("/applications/:applicationId/cancel", async (req, res) => {
+            const applicationId = req.params.applicationId;
+            const result = await appliedScholarshipCollection.updateOne(
+                { _id: new ObjectId(applicationId) },
+                { $set: { applicationStatus: "rejected" } }
+            );
+            res.send(result);
+        });
+
+        // Add feedback
+        app.post("/applications/:applicationId/feedback", async (req, res) => {
+            const { applicationId } = req.params;
+            const { feedback } = req.body;
+
+            const result = await appliedScholarshipCollection.updateOne(
+                { _id: new ObjectId(applicationId) },
+                { $set: { feedback } }
+            );
+            res.send(result);
+        });
+
         // Fetch applied scholarships by user email
         app.get("/applied-scholarships/:email", async (req, res) => {
             const email = req.params.email;
