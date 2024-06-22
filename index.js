@@ -48,6 +48,13 @@ async function run() {
             res.send(result);
         });
 
+        // Add a new scholarship
+        app.post("/scholarships", async (req, res) => {
+            const scholarshipData = req.body;
+            const result = await scholarshipCollection.insertOne(scholarshipData);
+            res.send(result);
+        });
+
         // Update scholarship
         app.put("/update-scholarships/:id", async (req, res) => {
             const query = { _id: new ObjectId(req.params.id) };
